@@ -56,8 +56,7 @@ public class ResearchProject {
                     "Journal of Science",
                     "Results of research on " + topic,
                     10,
-                    "10.1234/doi" + Math.random(),
-                    0
+                    "10.1234/doi" + Math.random()
             );
             publishedPapers.add(newPaper);
             System.out.println("Paper published: " + newPaper.getTitle());

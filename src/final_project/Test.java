@@ -1,125 +1,315 @@
 package final_project;
+
 import java.util.*;
-public class Test {
+
+public class MainApplication {
+
+    private static Scanner scanner = new Scanner(System.in);
+
     public static void main(String[] args) {
-        TechSupport techSupport = new TechSupport(1, "John Doe", "johndoe", "password", 1001, "john@example.com", true, UserRole.TECHSUPPORT);
+        UserManager userManager = new UserManager();
 
-        // Создание заказов
-        Order order1 = new Order(1, OrderStatus.NEW, "Fix computer issue");
-        Order order2 = new Order(2, OrderStatus.NEW, "Install software");
+        // Adding sample users
+        userManager.addUser(new User("admin", "adminpass", 1, "admin@example.com", false, UserRole.ADMIN));
+        userManager.addUser(new User("student", "studentpass", 2, "student@example.com", false, UserRole.STUDENT));
+        userManager.addUser(new Teacher("T1", "teacher", "Science"));
+        userManager.addUser(new User("tech", "techpass", 4, "tech@example.com", false, UserRole.TECHSUPPORT));
+        userManager.addUser(new ResearcherUser("researcher", "researchpass", 5, "researcher@example.com", false, UserRole.RESEARCHER, ResearchField.COMPUTER_SCIENCE));
 
-        // Добавление заказов в список новых
-        techSupport.getNewOrders().add(order1);
-        techSupport.getNewOrders().add(order2);
+        while (true) {
+            System.out.println("Welcome to the University System");
+            System.out.print("Enter username: ");
+            String username = scanner.nextLine();
+            System.out.print("Enter password: ");
+            String password = scanner.nextLine();
 
-        // Создание команд
-        OrderCommand acceptOrderCommand = new AcceptOrderCommand(order1, techSupport.getNewOrders(), techSupport.getAcceptedOrders());
-        OrderCommand rejectOrderCommand = new RejectOrderCommand(order2, techSupport.getNewOrders());
-        OrderCommand completeOrderCommand = new CompleteOrderCommand(order1, techSupport.getAcceptedOrders());
+            User currentUser = userManager.authenticate(username, password);
+            if (currentUser == null) {
+                System.out.println("Invalid username or password. Try again.");
+                continue;
+            }
 
-        // Выполнение команд
-        techSupport.executeCommand(acceptOrderCommand); // Принять заказ
-        techSupport.executeCommand(rejectOrderCommand); // Отклонить заказ
-        techSupport.executeCommand(completeOrderCommand); // Завершить заказ
-
-
-        Admin admin1 = Admin.getInstance();
-        Admin admin2 = Admin.getInstance();
-
-        // Проверяем, что admin1 и admin2 ссылаются на один и тот же объект
-        System.out.println(admin1 == admin2); // true
-
-        // Работа с администратором
-        User user1 = new User("Alice", "alice", 312, "alice@example.com", true, UserRole.STUDENT);
-        User user2 = new User("Bob", "bobik", 313, "bob@example.com", true, UserRole.STUDENT);
-
-        List<User> usersToAdd = new ArrayList<>();
-        usersToAdd.add(user1);
-        usersToAdd.add(user2);
-
-        admin1.addUser(usersToAdd); // Добавляем пользователей через admin1
-        admin2.displayUsers();
-
-
-        Course mathCourse = new Course("MATH101", "Calculus I", 3, 30, CourseType.MAJOR);
-        Course physicsCourse = new Course("PHYS101", "Physics I", 4, 25, CourseType.MINOR);
-
-        // Создание преподавателей
-        Teacher teacher1 = new Teacher("T001", "Alice Johnson", "Mathematics");
-        Teacher teacher2 = new Teacher("T002", "Bob Smith", "Physics");
-
-        // Преподаватели назначаются на курсы
-        teacher1.addCourse(mathCourse);
-        teacher2.addCourse(physicsCourse);
-
-        // Вывод курсов, на которые назначены преподаватели
-        System.out.println("Курсы, на которые назначены преподаватели:");
-        System.out.println(teacher1.getName() + ": " + getCourseNames(teacher1.getAssignedCourses()));
-        System.out.println(teacher2.getName() + ": " + getCourseNames(teacher2.getAssignedCourses()));
-
-        // Создание студентов
-        Student student1 = new Student("S001", StudentType.BACHELOR, "Mathematics");
-        Student student2 = new Student("S002", StudentType.PHD, "Physics");
-        student1.setName("John Doe");
-        student2.setName("Jane Smith");
-
-        // Регистрация студентов на курсы
-        student1.addCourse(mathCourse);
-        student2.addCourse(physicsCourse);
-        mathCourse.addStudent(student1);
-        physicsCourse.addStudent(student2);
-
-        // Просмотр курсов, на которые зарегистрирован студент
-        System.out.println("\nКурсы студента " + student1.getName() + ":");
-        printCourses(student1.viewCourses());
-
-
-
-        // Вывод среднего рейтинга преподавателей
-        System.out.println("\nСредний рейтинг преподавателей:");
-        System.out.println(teacher1.getName() + ": " + teacher1.getAverageRating());
-        System.out.println(teacher2.getName() + ": " + teacher2.getAverageRating());
-
-        // Создание расписания
-        List<Course> scheduleCourses = new ArrayList<>();
-        scheduleCourses.add(mathCourse);
-        scheduleCourses.add(physicsCourse);
-        Schedule schedule = new Schedule("SCH001", new Date(), scheduleCourses);
-
-        // Вывод расписания
-        System.out.println("\nРасписание:");
-        System.out.println(schedule);
-
-        // Назначение оценок студентам
-        Mark mark1 = new Mark("A", 95.0, 4.0, mathCourse); // Указываем курс mathCourse
-        Mark mark2 = new Mark("B+", 88.0, 3.0, physicsCourse); // Указываем курс physicsCourse
-        mathCourse.assignMark(student1, mark1);
-        physicsCourse.assignMark(student2, mark2);
-
-        // Просмотр оценок студентов
-        System.out.println("\nОценки студентов:");
-        System.out.println(student1.getName() + ": " + mathCourse.getMark(student1));
-        System.out.println(student2.getName() + ": " + physicsCourse.getMark(student2));
-    }
-
-    // Вспомогательный метод для получения названий курсов
-    private static String getCourseNames(List<Course> courses) {
-        StringBuilder result = new StringBuilder();
-        for (Course course : courses) {
-            result.append(course.getCourseName()).append(", ");
+            System.out.println("Welcome, " + currentUser.getUserName() + "! Role: " + currentUser.getRole());
+            mainMenu(currentUser, userManager);
         }
-        return result.length() > 0 ? result.substring(0, result.length() - 2) : "Нет курсов";
     }
 
-    // Вспомогательный метод для вывода курсов
-    private static void printCourses(List<Course> courses) {
-        if (courses.isEmpty()) {
-            System.out.println("Нет зарегистрированных курсов.");
-        } else {
-            for (Course course : courses) {
-                System.out.println(course.getCourseName());
+    private static void mainMenu(User user, UserManager userManager) {
+        while (user.isActive()) {
+            switch (user.getRole()) {
+                case ADMIN:
+                    adminMenu(userManager);
+                    break;
+                case STUDENT:
+                    studentMenu((Student) user);
+                    break;
+                case TEACHER:
+                    teacherMenu((Teacher) user);
+                    break;
+                case TECHSUPPORT:
+                    techSupportMenu(user);
+                    break;
+                case RESEARCHER:
+                    researcherMenu((ResearcherUser) user);
+                    break;
+                default:
+                    System.out.println("Role not supported yet.");
+                    return;
             }
         }
     }
+
+    private static void adminMenu(UserManager userManager) {
+        while (true) {
+            System.out.println("Admin Menu:");
+            System.out.println("1. Display Users");
+            System.out.println("2. Add User");
+            System.out.println("3. Remove User");
+            System.out.println("4. Back");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    userManager.getUsers().forEach(System.out::println);
+                    break;
+                case 2:
+                    System.out.print("Enter username: ");
+                    String username = scanner.nextLine();
+                    System.out.print("Enter password: ");
+                    String password = scanner.nextLine();
+                    System.out.print("Enter email: ");
+                    String email = scanner.nextLine();
+                    System.out.print("Enter role (ADMIN, STUDENT, TEACHER, TECHSUPPORT, RESEARCHER): ");
+                    String role = scanner.nextLine();
+                    UserRole userRole = UserRole.valueOf(role.toUpperCase());
+
+                    if (userRole == UserRole.RESEARCHER) {
+                        System.out.print("Enter research field (COMPUTER_SCIENCE, PHYSICS, etc.): ");
+                        ResearchField field = ResearchField.valueOf(scanner.nextLine().toUpperCase());
+                        userManager.addUser(new ResearcherUser(username, password, userManager.getUsers().size() + 1, email, false, userRole, field));
+                    } else {
+                        userManager.addUser(new User(username, password, userManager.getUsers().size() + 1, email, false, userRole));
+                    }
+                    System.out.println("User added.");
+                    break;
+                case 3:
+                    System.out.print("Enter username to remove: ");
+                    String userToRemove = scanner.nextLine();
+                    User user = userManager.getUsers().stream()
+                            .filter(u -> u.getUserName().equals(userToRemove))
+                            .findFirst()
+                            .orElse(null);
+                    if (user != null) {
+                        userManager.getUsers().remove(user);
+                        System.out.println("User removed.");
+                    } else {
+                        System.out.println("User not found.");
+                    }
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
     }
 
+    private static void studentMenu(Student student) {
+        while (true) {
+            System.out.println("Student Menu:");
+            System.out.println("1. View Courses");
+            System.out.println("2. Add Course");
+            System.out.println("3. Drop Course");
+            System.out.println("4. View Schedule");
+            System.out.println("5. Rate Teacher");
+            System.out.println("6. View Transcript");
+            System.out.println("7. Conduct Research");
+            System.out.println("8. Back");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Enrolled Courses: " + student.viewCourses());
+                    break;
+                case 2:
+                    System.out.print("Enter course name: ");
+                    String courseName = scanner.nextLine();
+                    Course course = new Course("C" + (int) (Math.random() * 100), courseName, 3, 30, CourseType.MAJOR);
+                    student.addCourse(course);
+                    break;
+                case 3:
+                    System.out.print("Enter course name to drop: ");
+                    String dropCourseName = scanner.nextLine();
+                    Course dropCourse = student.viewCourses().stream()
+                            .filter(c -> c.getCourseName().equals(dropCourseName))
+                            .findFirst()
+                            .orElse(null);
+                    if (dropCourse != null) {
+                        student.dropCourse(dropCourse);
+                    } else {
+                        System.out.println("Course not found.");
+                    }
+                    break;
+                case 4:
+                    Schedule schedule = student.viewSchedule();
+                    System.out.println("Schedule: " + (schedule != null ? schedule : "No schedule available."));
+                    break;
+                case 5:
+                    System.out.print("Enter teacher name: ");
+                    String teacherName = scanner.nextLine();
+                    Teacher teacher = new Teacher("T" + (int) (Math.random() * 100), teacherName, "Faculty");
+                    System.out.print("Enter rating (0-10): ");
+                    double rating = scanner.nextDouble();
+                    scanner.nextLine(); // Consume newline
+                    try {
+                        student.rateTeacher(teacher, rating);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
+                    }
+                    break;
+                case 6:
+                    System.out.println("Transcript: " + student.viewTranscript().getTranscript());
+                    break;
+                case 7:
+                    student.conductResearch();
+                    break;
+                case 8:
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private static void teacherMenu(Teacher teacher) {
+        while (true) {
+            System.out.println("Teacher Menu:");
+            System.out.println("1. Add Course");
+            System.out.println("2. Remove Course");
+            System.out.println("3. View Assigned Courses");
+            System.out.println("4. View Average Rating");
+            System.out.println("5. Back");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter course name: ");
+                    String courseName = scanner.nextLine();
+                    Course newCourse = new Course("C" + (int) (Math.random() * 100), courseName, 3, 30, CourseType.MAJOR);
+                    teacher.addCourse(newCourse);
+                    break;
+                case 2:
+                    System.out.print("Enter course name to remove: ");
+                    String removeCourseName = scanner.nextLine();
+                    Course removeCourse = teacher.getAssignedCourses().stream()
+                            .filter(c -> c.getCourseName().equals(removeCourseName))
+                            .findFirst()
+                            .orElse(null);
+                    if (removeCourse != null) {
+                        teacher.removeCourse(removeCourse);
+                    } else {
+                        System.out.println("Course not found.");
+                    }
+                    break;
+                case 3:
+                    System.out.println("Assigned Courses: " + teacher.getAssignedCourses());
+                    break;
+                case 4:
+                    System.out.println("Average Rating: " + teacher.getAverageRating());
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private static void techSupportMenu(User user) {
+        while (true) {
+            System.out.println("Tech Support Menu:");
+            System.out.println("1. View New Orders");
+            System.out.println("2. Accept Order");
+            System.out.println("3. Complete Order");
+            System.out.println("4. Back");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.println("View New Orders - Feature not implemented yet.");
+                    break;
+                case 2:
+                    System.out.println("Accept Order - Feature not implemented yet.");
+                    break;
+                case 3:
+                    System.out.println("Complete Order - Feature not implemented yet.");
+                    break;
+                case 4:
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    private static void researcherMenu(ResearcherUser user) {
+        while (true) {
+            System.out.println("Researcher Menu:");
+            System.out.println("1. Conduct Research");
+            System.out.println("2. Publish Paper");
+            System.out.println("3. View Published Papers");
+            System.out.println("4. Calculate H-Index");
+            System.out.println("5. Back");
+            System.out.print("Choose an option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    user.conductResearch();
+                    break;
+                case 2:
+                    System.out.print("Enter paper title: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Enter journal name: ");
+                    String journal = scanner.nextLine();
+                    ResearchPaper paper = new ResearchPaper(
+                            title,
+                            List.of(user.getUserName()),
+                            Calendar.getInstance().get(Calendar.YEAR),
+                            journal,
+                            "Abstract for " + title,
+                            10,
+                            "10.1000/" + UUID.randomUUID()
+                    );
+                    user.publishResearchPaper(paper);
+                    break;
+                case 3:
+                    user.printPapers(Comparator.comparing(ResearchPaper::getYear));
+                    break;
+                case 4:
+                    System.out.println("H-Index: " + user.calculateHIndex());
+                    break;
+                case 5:
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+
+}

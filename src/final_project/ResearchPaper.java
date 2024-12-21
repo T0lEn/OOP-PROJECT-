@@ -11,11 +11,10 @@ public class ResearchPaper {
     private String annotation;
     private Integer pages;
     private String doi;
-    private Integer citations;
 
 
     public ResearchPaper(String title, List<String> authors, Integer year, String journal,
-                         String annotation, Integer pages, String doi, Integer citations) {
+                         String annotation, Integer pages, String doi) {
         this.title = title;
         this.authors = authors;
         this.year = year;
@@ -23,7 +22,6 @@ public class ResearchPaper {
         this.annotation = annotation;
         this.pages = pages;
         this.doi = doi;
-        this.citations = citations;
     }
 
 
@@ -83,14 +81,6 @@ public class ResearchPaper {
         this.doi = doi;
     }
 
-    public Integer getCitations() {
-        return citations;
-    }
-
-    public void setCitations(Integer citations) {
-        this.citations = citations;
-    }
-
     @Override
     public String toString() {
         return "ResearchPaper:" +
@@ -100,8 +90,6 @@ public class ResearchPaper {
                 "journal:" + journal +
                 "annotation:" + annotation +
                 "pages:" + pages +
-                "doi:" + doi +
-                "citations:" + citations;
+                "doi:" + doi;
     }
 }
-

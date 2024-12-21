@@ -9,7 +9,6 @@ public class Mark {
     private Mark secondAttestation;
     private Mark finalMark;
 
-
     // Default Constructor
     public Mark() {
     }
@@ -21,7 +20,6 @@ public class Mark {
         this.gpa = gpa;
         this.course = course;
     }
-
 
     // Getters and Setters
     public String getLetterMark() {
@@ -95,32 +93,36 @@ public class Mark {
     }
 
     // Assign First Attestation
-    public void assignFirstAttestation(Double percentageMark, String letterMark) {
-        if (percentageMark != null && letterMark != null) {
-            this.firstAttestation = new Mark(letterMark, percentageMark, null, null);
-            System.out.println("First attestation assigned: " + this.firstAttestation);
-        } else {
-            System.out.println("Error: Invalid input for first attestation.");
+    public void assignFirstAttestation(Double percentageMark, String letterMark) throws InvalidMarkException {
+        if (percentageMark == null || letterMark == null || percentageMark < 0 || percentageMark > 100) {
+            throw new InvalidMarkException("Invalid input for first attestation: Percentage must be between 0 and 100, and letter mark cannot be null.");
         }
+        this.firstAttestation = new Mark(letterMark, percentageMark, null, null);
+        System.out.println("First attestation assigned: " + this.firstAttestation);
     }
 
     // Assign Second Attestation
-    public void assignSecondAttestation(Double percentageMark, String letterMark) {
-        if (percentageMark != null && letterMark != null) {
-            this.secondAttestation = new Mark(letterMark, percentageMark, null, null);
-            System.out.println("Second attestation assigned: " + this.secondAttestation);
-        } else {
-            System.out.println("Error: Invalid input for second attestation.");
+    public void assignSecondAttestation(Double percentageMark, String letterMark) throws InvalidMarkException {
+        if (percentageMark == null || letterMark == null || percentageMark < 0 || percentageMark > 100) {
+            throw new InvalidMarkException("Invalid input for second attestation: Percentage must be between 0 and 100, and letter mark cannot be null.");
         }
+        this.secondAttestation = new Mark(letterMark, percentageMark, null, null);
+        System.out.println("Second attestation assigned: " + this.secondAttestation);
     }
 
     // Assign Final Mark
-    public void assignFinalMark(Double percentageMark, String letterMark, Double gpa) {
-        if (percentageMark != null && letterMark != null && gpa != null) {
-            this.finalMark = new Mark(letterMark, percentageMark, gpa, null);
-            System.out.println("Final mark assigned: " + this.finalMark);
-        } else {
-            System.out.println("Error: Invalid input for final mark.");
+    public void assignFinalMark(Double percentageMark, String letterMark, Double gpa) throws InvalidMarkException {
+        if (percentageMark == null || letterMark == null || gpa == null || percentageMark < 0 || percentageMark > 100 || gpa < 0 || gpa > 4) {
+            throw new InvalidMarkException("Invalid input for final mark: Percentage must be between 0 and 100, GPA must be between 0 and 4, and letter mark cannot be null.");
+        }
+        this.finalMark = new Mark(letterMark, percentageMark, gpa, null);
+        System.out.println("Final mark assigned: " + this.finalMark);
+    }
+
+    // Custom Exception Class for Invalid Mark
+    public static class InvalidMarkException extends Exception {
+        public InvalidMarkException(String message) {
+            super(message);
         }
     }
 }

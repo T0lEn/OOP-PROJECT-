@@ -1,13 +1,14 @@
 package final_project;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class Student {
     private String name;
     private String studentID;
     private StudentType studentType;
     private List<Course> enrolledCourses;
-    private double gpa;
     private Schedule schedule;
     private String faculty;
     private List<StudentOrganization> enrolledOrganization;
@@ -54,10 +55,6 @@ public class Student {
         }
     }
 
-    public double getGpa() {
-        return gpa;
-    }
-
     public List<Course> viewCourses() {
         return enrolledCourses;
     }
@@ -79,6 +76,7 @@ public class Student {
             throw new IllegalArgumentException("Рейтинг должен быть от 0 до 10.");
         }
         teacher.addRating(rating);
+        System.out.println("Преподаватель " + teacher.getName() + " получил рейтинг: " + rating);
     }
 
     public String getFaculty() {
@@ -110,7 +108,7 @@ public class Student {
     }
 
     public ResearchField getResearchField() {
-        return null;
+        return null; // Placeholder for further implementation
     }
 
     public void publishResearchPaper(ResearchPaper paper) {
@@ -142,11 +140,5 @@ public class Student {
     @Override
     public int hashCode() {
         return Objects.hash(studentID);
-    }
-
-    class Teacher {
-        public void addRating(double rating) {
-            System.out.println("Рейтинг " + rating + " добавлен преподавателю.");
-        }
     }
 }

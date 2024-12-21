@@ -1,26 +1,20 @@
 package final_project;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
-public class Employee implements Observer {
+public class Employee {
     private String department;
     private double salary;
     private String hireDate;
     private List<Request> requests;
-    private List<Observer> observers;
-
 
     public Employee(String department, double salary, String hireDate) {
         this.department = department;
         this.salary = salary;
-        this.hireDate = hireDate;
+        setHireDate(hireDate);
         this.requests = new ArrayList<>();
-    }
-
-
-    public void addObserver(Observer observer) {
-        observers.add(observer);
     }
 
     public String getDepartment() {
@@ -44,25 +38,36 @@ public class Employee implements Observer {
     }
 
     public void setHireDate(String hireDate) {
-        this.hireDate = hireDate;
+        if (isValidDate(hireDate)) {
+            this.hireDate = hireDate;
+        } else {
+            throw new IllegalArgumentException("Invalid date format. Use YYYY-MM-DD.");
+        }
     }
 
+    private boolean isValidDate(String date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
+        try {
+            sdf.parse(date);
+            return true;
+        } catch (ParseException e) {
+            return false;
+        }
+    }
 
     public void sendMessage(String message) {
         System.out.println("Message: " + message);
     }
 
-
     public List<Request> viewRequests() {
         return requests;
     }
-
 
     public void updateSalary(Double newSalary) {
         this.salary = newSalary;
         System.out.println("Update salary " + this.salary);
     }
-
 
     public String getEmployeeDetails() {
         return "Department: " + getDepartment() + ", Salary: " + getSalary() + ", Hire Date: " + getHireDate();
@@ -84,10 +89,4 @@ public class Employee implements Observer {
             System.out.println(req);
         }
     }
-
-    @Override
-    public void update(String message) {
-        System.out.println("Update: " + message);
-    }
 }
-
